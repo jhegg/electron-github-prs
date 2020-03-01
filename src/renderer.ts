@@ -27,7 +27,7 @@
  */
 
 import './index.css'
-import { Octokit } from "@octokit/rest"
+import { Octokit } from '@octokit/rest'
 
 const octokit = new Octokit()
 const githubOrgName = 'jhegg'
@@ -35,7 +35,7 @@ const githubOrgName = 'jhegg'
 const getReposForUser = async (): Promise<void> => {
   const repos = await octokit.repos.listForUser({
     username: githubOrgName,
-    type: "all"
+    type: 'all'
   })
   console.log(`Repos query status: ${repos.status}`)
   console.log(`Number of repos: ${repos.data.length}`)
@@ -46,7 +46,7 @@ const getReposForUser = async (): Promise<void> => {
     const option = document.createElement('option')
     option.textContent = repoName
     reposSelectElement.appendChild(option)
-  });
+  })
   reposSelectElement.removeAttribute('disabled')
   reposSelectElement.focus()
 }
@@ -73,12 +73,14 @@ document.getElementById('repo-select').onchange = (event): void => {
 }
 
 const getPullRequests = async (): Promise<void> => {
-  const repo = document.getElementById('selected-repo').getAttribute('value') as string
+  const repo = document
+    .getElementById('selected-repo')
+    .getAttribute('value') as string
   console.log(`Going to get pull requests for repo: ${repo}`)
   const pulls = await octokit.pulls.list({
     owner: githubOrgName,
     repo: repo,
-    state: "all"
+    state: 'all'
   })
   console.log(`Pulls query status: ${pulls.status}`)
   document.getElementById('numberOfPulls').textContent = `${pulls.data.length}`
