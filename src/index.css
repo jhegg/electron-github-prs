@@ -1,14 +1,15 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
   margin: auto;
   max-width: 38rem;
   padding: 2rem;
-  background-color: #1b262c; /* https://colorhunt.co/palette/167893 */
-  color: #3282b8;
+  background-color: #222831; /* https://colorhunt.co/palette/2763 */
+  color: #eeeeee;
 }
 
 hr {
-  border: 1px solid #0f4c75;
+  border: 1px solid #393e46;
 }
 
 .resultsContainer {
@@ -16,5 +17,5 @@ hr {
 }
 
 .resultsText {
-  color: #bbe1fa;
+  color: #00adb5;
 }
