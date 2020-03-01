@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>GitHub PR Analysis</title>
+  </head>
+  <body>
+    <h1>GitHub PR Analysis</h1>
+    <div style="margin-bottom: 10px">
+      <label for="repo-select">Choose a repository:</label>
+      <select name="repositories" id="repo-select" disabled>
+        <option value="">--Please choose a repository--</option>
+      </select>
+      <input id="selected-repo" type="hidden" />
+    </div>
+    <button id="testButton" type="button" disabled>Collect Pull Request Data</button>
+    <hr />
+    <div class="resultsContainer">
+      <p>Number of Pull Requests: <span id="numberOfPulls" class="resultsText"></span></p>
+      <div>Pull Requests: 
+        <div id="pulls" class="resultsContainer resultsText"></div>
+      </div>
+    </div>
+  </body>
+</html>
