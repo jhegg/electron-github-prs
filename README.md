@@ -6,6 +6,7 @@ Makes anonymous GitHub API queries to get the repository list for `jhegg`, and t
 
 ## How to use
 
+- `npm install`
 - `npm start`
 - Use the dropdown to select a repo, such as `electron-github-prs`
 - Click the button to fetch PR data
