@@ -1,47 +1,13 @@
-/**
- * This file will automatically be loaded by webpack and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
- *
- * https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.js` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
- */
-
 import './index.css'
-import { Octokit } from '@octokit/rest'
+import { GitHub } from './github'
 
-const octokit = new Octokit()
 const githubOrgName = 'jhegg'
 
+const github: GitHub = new GitHub()
+
 const getReposForUser = async (): Promise<void> => {
-  const repos = await octokit.repos.listForUser({
-    username: githubOrgName,
-    type: 'all'
-  })
-  console.log(`Repos query status: ${repos.status}`)
-  console.log(`Number of repos: ${repos.data.length}`)
-  const repoNames = repos.data.map((repo: { name: string }) => repo.name)
-  repoNames.sort()
   const reposSelectElement = document.getElementById('repo-select')
+  const repoNames = await github.getRepoNamesFor(githubOrgName)
   repoNames.forEach((repoName: string) => {
     const option = document.createElement('option')
     option.textContent = repoName
@@ -76,17 +42,11 @@ const getPullRequests = async (): Promise<void> => {
   const repo = document
     .getElementById('selected-repo')
     .getAttribute('value') as string
-  console.log(`Going to get pull requests for repo: ${repo}`)
-  const pulls = await octokit.pulls.list({
-    owner: githubOrgName,
-    repo: repo,
-    state: 'all'
-  })
-  console.log(`Pulls query status: ${pulls.status}`)
-  document.getElementById('numberOfPulls').textContent = `${pulls.data.length}`
-  pulls.data.forEach(pullRequest => {
+  const pulls = await github.getPullRequestsFor(githubOrgName, repo)
+  document.getElementById('numberOfPulls').textContent = `${pulls.length}`
+  pulls.forEach(pullRequest => {
     const detailDiv = document.createElement('div')
-    detailDiv.innerHTML = `#${pullRequest.number} - ${pullRequest.title} - ${pullRequest.user.login}<br>`
+    detailDiv.innerHTML = `#${pullRequest.number} - ${pullRequest.title} - ${pullRequest.author}<br>`
     const pullsDiv = document.getElementById('pulls')
     pullsDiv.appendChild(detailDiv)
   })
