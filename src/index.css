@@ -12,6 +12,14 @@ hr {
   border: 1px solid #393e46;
 }
 
+.inputContainer {
+  margin-bottom: 20px;
+}
+
+.errorText {
+  color: #ffb000;
+}
+
 .resultsContainer {
   padding-left: 10px;
 }

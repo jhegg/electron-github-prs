@@ -2,24 +2,27 @@ import './index.css'
 import { GitHub } from './github'
 
 const githubOrgName = 'jhegg'
-
 const github: GitHub = new GitHub()
 
 const getReposForUser = async (): Promise<void> => {
   const reposSelectElement = document.getElementById('repo-select')
-  const repoNames = await github.getRepoNamesFor(githubOrgName)
-  repoNames.forEach((repoName: string) => {
-    const option = document.createElement('option')
-    option.textContent = repoName
-    reposSelectElement.appendChild(option)
-  })
-  reposSelectElement.removeAttribute('disabled')
-  reposSelectElement.focus()
+  try {
+    const repoNames = await github.getRepoNamesFor(githubOrgName)
+    repoNames.forEach((repoName: string) => {
+      const option = document.createElement('option')
+      option.textContent = repoName
+      reposSelectElement.appendChild(option)
+    })
+    reposSelectElement.removeAttribute('disabled')
+    reposSelectElement.focus()
+  } catch (error) {
+    document.getElementById(
+      'accessTokenInputError'
+    ).textContent = `Error: ${error}`
+  }
 }
 
-getReposForUser()
-
-function clearData(): void {
+function clearPullRequestData(): void {
   document.getElementById('numberOfPulls').textContent = ''
   const pullsDiv = document.getElementById('pulls')
   while (pullsDiv.firstChild) {
@@ -31,11 +34,15 @@ document.getElementById('repo-select').onchange = (event): void => {
   const selectedValue = (event.target as HTMLInputElement).value
   document.getElementById('selected-repo').setAttribute('value', selectedValue)
   if (selectedValue && selectedValue.length > 0) {
-    document.getElementById('testButton').removeAttribute('disabled')
+    document
+      .getElementById('collectPullRequestsButton')
+      .removeAttribute('disabled')
   } else {
-    document.getElementById('testButton').setAttribute('disabled', '')
+    document
+      .getElementById('collectPullRequestsButton')
+      .setAttribute('disabled', '')
   }
-  clearData()
+  clearPullRequestData()
 }
 
 const getPullRequests = async (): Promise<void> => {
@@ -52,4 +59,48 @@ const getPullRequests = async (): Promise<void> => {
   })
 }
 
-document.getElementById('testButton').onclick = getPullRequests
+document.getElementById('collectPullRequestsButton').onclick = getPullRequests
+
+function clearRepoData(): void {
+  const reposSelectElement = document.getElementById('repo-select')
+  reposSelectElement.setAttribute('disabled', '')
+  while (reposSelectElement.firstChild) {
+    reposSelectElement.removeChild(reposSelectElement.firstChild)
+  }
+  const defaultRepoSelectElement = document.createElement('option')
+  defaultRepoSelectElement.textContent = '--Please choose a repository--'
+  defaultRepoSelectElement.value = ''
+  reposSelectElement.appendChild(defaultRepoSelectElement)
+  document
+    .getElementById('collectPullRequestsButton')
+    .setAttribute('disabled', '')
+}
+
+const saveAccessToken = async (): Promise<void> => {
+  const accessToken = (document.getElementById(
+    'accessTokenInput'
+  ) as HTMLInputElement).value.trim()
+  const accessTokenInputErrorElement = document.getElementById(
+    'accessTokenInputError'
+  )
+  const authenticatedUserElement = document.getElementById('authenticatedUser')
+
+  if (accessToken && accessToken.length > 0) {
+    accessTokenInputErrorElement.textContent = ''
+    github.setAuthToken(accessToken)
+    try {
+      const authenticatedUser = await github.testAuthentication()
+      authenticatedUserElement.textContent = `Authenticated as: ${authenticatedUser}`
+      getReposForUser()
+    } catch (error) {
+      accessTokenInputErrorElement.textContent = `Error: ${error}`
+      authenticatedUserElement.textContent = ''
+      clearPullRequestData()
+      clearRepoData()
+    }
+  } else {
+    accessTokenInputErrorElement.textContent = 'Error: access token was not set'
+  }
+}
+
+document.getElementById('saveAccessTokenButton').onclick = saveAccessToken

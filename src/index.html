@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>GitHub PR Analysis</title>
   </head>
   <body>
     <h1>GitHub PR Analysis</h1>
-    <div style="margin-bottom: 10px">
+    <div class="inputContainer">
+      <div>
+        Input your github.com personal access token:
+      </div>
+      <div>
+        <input id="accessTokenInput" type="text" />
+        <button id="saveAccessTokenButton" type="button">
+          Save Access Token
+        </button>
+      </div>
+      <div id="authenticatedUser" class="resultsText"></div>
+      <div id="accessTokenInputError" class="errorText"></div>
+    </div>
+    <hr />
+    <div class="inputContainer">
       <label for="repo-select">Choose a repository:</label>
       <select name="repositories" id="repo-select" disabled>
         <option value="">--Please choose a repository--</option>
       </select>
       <input id="selected-repo" type="hidden" />
     </div>
-    <button id="testButton" type="button" disabled>Collect Pull Request Data</button>
+    <button id="collectPullRequestsButton" type="button" disabled>
+      Collect Pull Request Data
+    </button>
     <hr />
     <div class="resultsContainer">
-      <p>Number of Pull Requests: <span id="numberOfPulls" class="resultsText"></span></p>
-      <div>Pull Requests: 
+      <p>
+        Number of Pull Requests:
+        <span id="numberOfPulls" class="resultsText"></span>
+      </p>
+      <div>
+        Pull Requests:
         <div id="pulls" class="resultsContainer resultsText"></div>
       </div>
     </div>

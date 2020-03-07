@@ -42,4 +42,17 @@ export class GitHub {
     )
     return pullRequests
   }
+
+  setAuthToken(accessToken: string): void {
+    this.octokit = new Octokit({
+      auth: accessToken,
+      userAgent: 'jhegg/electron-github-prs 1.0.0'
+    })
+  }
+
+  async testAuthentication(): Promise<string> {
+    const authenticatedUser = await this.octokit.users.getAuthenticated()
+    console.log(`Authenticated user: ${authenticatedUser.data.login}`)
+    return authenticatedUser.data.login
+  }
 }
