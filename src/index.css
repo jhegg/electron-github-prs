@@ -27,3 +27,7 @@ hr {
 #authenticatedUser {
   padding-top: 10px;
 }
+
+.demo-width-class {
+  width: 414px;
+}
