@@ -60,6 +60,7 @@ repoSelector.listen('MDCSelect:change', () => {
 })
 
 const getPullRequests = async (): Promise<void> => {
+  clearPullRequestData()
   const repo = document
     .getElementById('selected-repo')
     .getAttribute('value') as string
