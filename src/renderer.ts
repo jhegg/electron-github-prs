@@ -5,7 +5,7 @@ import 'typeface-roboto'
 import { MDCRipple } from '@material/ripple'
 import { MDCSelect } from '@material/select'
 import { MDCTextField } from '@material/textfield'
-import { GitHub } from './github'
+import { GitHub, PullRequest } from './github'
 
 new MDCRipple(document.querySelector('.mdc-button'))
 new MDCTextField(document.querySelector('.mdc-text-field'))
@@ -58,17 +58,78 @@ repoSelector.listen('MDCSelect:change', () => {
   clearPullRequestData()
 })
 
+function createPullRequestCard(pullRequest: PullRequest): HTMLDivElement {
+  const cardDiv = document.createElement('div')
+  cardDiv.className = 'mdc-card pullRequestCard'
+
+  const primaryDiv = document.createElement('div')
+  primaryDiv.className = 'pullRequestCard__primary'
+  cardDiv.appendChild(primaryDiv)
+
+  const title = document.createElement('h6')
+  title.className =
+    'pullRequestCard__title mdc-typography mdc-typography--headline6'
+  title.textContent = `#${pullRequest.number} - ${pullRequest.title}`
+  primaryDiv.appendChild(title)
+
+  const subtitle = document.createElement('h3')
+  subtitle.className =
+    'pullRequestCard__subtitle mdc-typography mdc-typography--subtitle2'
+  subtitle.textContent = `by ${pullRequest.author}`
+  primaryDiv.appendChild(subtitle)
+
+  const secondaryDiv = document.createElement('div')
+  secondaryDiv.className =
+    'pullRequestCard__secondary mdc-typography mdc-typography--body2'
+  cardDiv.appendChild(secondaryDiv)
+
+  const secondaryItemList = document.createElement('ul')
+  secondaryDiv.appendChild(secondaryItemList)
+
+  const creationDateItem = document.createElement('li')
+  creationDateItem.textContent = `Created: ${pullRequest.creationDate}`
+  secondaryItemList.appendChild(creationDateItem)
+
+  const mergeDateItem = document.createElement('li')
+  mergeDateItem.textContent = `Merged: ${pullRequest.mergeDate}`
+  secondaryItemList.appendChild(mergeDateItem)
+
+  const actionsDiv = document.createElement('div')
+  actionsDiv.className = 'mdc-card__actions'
+  cardDiv.appendChild(actionsDiv)
+
+  const githubButton = document.createElement('button')
+  githubButton.className =
+    'mdc-button mdc-card__action mdc-card__action--button'
+  actionsDiv.appendChild(githubButton)
+
+  const githubButtonRipple = document.createElement('div')
+  githubButtonRipple.className = 'mdc-button__ripple'
+  githubButton.appendChild(githubButtonRipple)
+
+  const githubButtonIcon = document.createElement('i')
+  githubButtonIcon.className = 'material-icons'
+  githubButtonIcon.textContent = 'open_in_browser'
+  githubButton.appendChild(githubButtonIcon)
+
+  const githubButtonLabel = document.createElement('span')
+  githubButtonLabel.className = 'mdc-button__label'
+  githubButtonLabel.textContent = 'GitHub'
+  githubButton.appendChild(githubButtonLabel)
+
+  return cardDiv
+}
+
 const getPullRequests = async (): Promise<void> => {
   const repo = document
     .getElementById('selected-repo')
     .getAttribute('value') as string
   const pulls = await github.getPullRequestsFor(githubOrgName, repo)
   document.getElementById('numberOfPulls').textContent = `${pulls.length}`
+  const pullsDiv = document.getElementById('pulls')
   pulls.forEach(pullRequest => {
-    const detailDiv = document.createElement('div')
-    detailDiv.innerHTML = `#${pullRequest.number} - ${pullRequest.title} - ${pullRequest.author}<br>`
-    const pullsDiv = document.getElementById('pulls')
-    pullsDiv.appendChild(detailDiv)
+    const cardDiv = createPullRequestCard(pullRequest)
+    pullsDiv.appendChild(cardDiv)
   })
 }
 

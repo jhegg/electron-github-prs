@@ -43,3 +43,30 @@ hr {
   margin-left: 6px;
   margin-top: 10px;
 }
+
+#pulls {
+  display: flex;
+  flex: 400px;
+  flex-wrap: wrap;
+}
+
+.pullRequestCard {
+  width: 400px;
+  margin: 20px;
+}
+
+.pullRequestCard__primary {
+  padding: 1rem;
+}
+
+.pullRequestCard__title {
+  margin: 0;
+}
+
+.pullRequestCard__subtitle {
+  margin: 0;
+}
+
+.pullRequestCard__secondary {
+  padding: 0 1rem 8px;
+}
