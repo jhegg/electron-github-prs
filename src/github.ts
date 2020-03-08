@@ -1,14 +1,24 @@
 import { Octokit } from '@octokit/rest'
 
-class PullRequest {
+export class PullRequest {
   number: number
   author: string
   title: string
+  creationDate: string
+  mergeDate: string
 
-  constructor(number: number, author: string, title: string) {
+  constructor(
+    number: number,
+    author: string,
+    title: string,
+    creationDate: string,
+    mergeDate: string
+  ) {
     this.number = number
     this.author = author
     this.title = title
+    this.creationDate = creationDate
+    this.mergeDate = mergeDate
   }
 }
 
@@ -38,7 +48,14 @@ export class GitHub {
     })
     console.log(`Pulls query status: ${pulls.status}`)
     const pullRequests = pulls.data.map(
-      pull => new PullRequest(pull.number, pull.user.login, pull.title)
+      pull =>
+        new PullRequest(
+          pull.number,
+          pull.user.login,
+          pull.title,
+          pull.created_at,
+          pull.merged_at
+        )
     )
     return pullRequests
   }
