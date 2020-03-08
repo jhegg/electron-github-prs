@@ -4,20 +4,24 @@
     <meta charset="UTF-8" />
     <title>GitHub PR Analysis</title>
   </head>
-  <body>
-    <h1>GitHub PR Analysis</h1>
+  <body class="mdc-typography">
+    <h3 class="mdc-typography--headline3">GitHub PR Analysis</h3>
     <div class="inputContainer">
       <div>
         Input your github.com personal access token:
       </div>
       <div>
         <input id="accessTokenInput" type="text" />
-        <button id="saveAccessTokenButton" type="button">
-          Save Access Token
+        <button
+          id="saveAccessTokenButton"
+          class="mdc-button mdc-button--raised"
+        >
+          <div class="mdc-button__ripple"></div>
+          <span class="mdc-button__label">Save</span>
         </button>
       </div>
-      <div id="authenticatedUser" class="resultsText"></div>
-      <div id="accessTokenInputError" class="errorText"></div>
+      <div id="authenticatedUser" class="mdc-theme--primary"></div>
+      <div id="accessTokenInputError" class="mdc-theme--error"></div>
     </div>
     <hr />
     <div class="inputContainer">
@@ -27,18 +31,23 @@
       </select>
       <input id="selected-repo" type="hidden" />
     </div>
-    <button id="collectPullRequestsButton" type="button" disabled>
-      Collect Pull Request Data
+    <button
+      id="collectPullRequestsButton"
+      class="mdc-button mdc-button--raised"
+      disabled
+    >
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Collect PR Data</span>
     </button>
     <hr />
     <div class="resultsContainer">
       <p>
         Number of Pull Requests:
-        <span id="numberOfPulls" class="resultsText"></span>
+        <span id="numberOfPulls" class="mdc-theme--primary"></span>
       </p>
       <div>
         Pull Requests:
-        <div id="pulls" class="resultsContainer resultsText"></div>
+        <div id="pulls" class="resultsContainer mdc-theme--primary"></div>
       </div>
     </div>
   </body>
