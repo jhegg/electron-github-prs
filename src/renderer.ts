@@ -2,10 +2,12 @@ import './index.css'
 import '../node_modules/material-components-web/dist/material-components-web.css'
 import 'material-design-icons/iconfont/material-icons.css'
 import 'typeface-roboto'
-import { MDCRipple } from '@material/ripple/index'
+import { MDCRipple } from '@material/ripple'
+import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
 
 new MDCRipple(document.querySelector('.mdc-button'))
+new MDCTextField(document.querySelector('.mdc-text-field'))
 
 const githubOrgName = 'jhegg'
 const github: GitHub = new GitHub()

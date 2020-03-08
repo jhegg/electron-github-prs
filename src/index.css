@@ -1,12 +1,13 @@
 body {
-  margin: auto;
-  max-width: 45rem;
-  padding: 1rem;
   background-color: gainsboro;
 }
 
 hr {
   border: 1px solid #393e46;
+}
+
+.instructionText {
+  margin-bottom: 10px;
 }
 
 .inputContainer {
@@ -15,4 +16,14 @@ hr {
 
 .resultsContainer {
   padding-left: 10px;
+}
+
+#saveAccessTokenButton {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  margin-left: 5px;
+}
+
+#authenticatedUser {
+  padding-top: 10px;
 }
