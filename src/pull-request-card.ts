@@ -1,65 +1,87 @@
 import { PullRequest } from './github'
 
-export function createPullRequestCard(
+export class PullRequestCard {
   pullRequest: PullRequest
-): HTMLDivElement {
-  const cardDiv = document.createElement('div')
-  cardDiv.className = 'mdc-card pullRequestCard'
 
-  const primaryDiv = document.createElement('div')
-  primaryDiv.className = 'pullRequestCard__primary'
-  cardDiv.appendChild(primaryDiv)
+  constructor(pullRequest: PullRequest) {
+    this.pullRequest = pullRequest
+  }
 
-  const title = document.createElement('h6')
-  title.className =
-    'pullRequestCard__title mdc-typography mdc-typography--headline6'
-  title.textContent = `#${pullRequest.number} - ${pullRequest.title}`
-  primaryDiv.appendChild(title)
+  private createPrimary(): HTMLDivElement {
+    const primaryDiv = document.createElement('div')
+    primaryDiv.className = 'pullRequestCard__primary'
 
-  const subtitle = document.createElement('h3')
-  subtitle.className =
-    'pullRequestCard__subtitle mdc-typography mdc-typography--subtitle2'
-  subtitle.textContent = `by ${pullRequest.author}`
-  primaryDiv.appendChild(subtitle)
+    const title = document.createElement('h6')
+    title.className =
+      'pullRequestCard__title mdc-typography mdc-typography--headline6'
+    title.textContent = `#${this.pullRequest.number} - ${this.pullRequest.title}`
+    primaryDiv.appendChild(title)
 
-  const secondaryDiv = document.createElement('div')
-  secondaryDiv.className =
-    'pullRequestCard__secondary mdc-typography mdc-typography--body2'
-  cardDiv.appendChild(secondaryDiv)
+    const subtitle = document.createElement('h3')
+    subtitle.className =
+      'pullRequestCard__subtitle mdc-typography mdc-typography--subtitle2'
+    subtitle.textContent = `by ${this.pullRequest.author}`
+    primaryDiv.appendChild(subtitle)
 
-  const secondaryItemList = document.createElement('ul')
-  secondaryDiv.appendChild(secondaryItemList)
+    return primaryDiv
+  }
 
-  const creationDateItem = document.createElement('li')
-  creationDateItem.textContent = `Created: ${pullRequest.creationDate}`
-  secondaryItemList.appendChild(creationDateItem)
+  private createSecondary(): HTMLDivElement {
+    const secondaryDiv = document.createElement('div')
+    secondaryDiv.className =
+      'pullRequestCard__secondary mdc-typography mdc-typography--body2'
 
-  const mergeDateItem = document.createElement('li')
-  mergeDateItem.textContent = `Merged: ${pullRequest.mergeDate}`
-  secondaryItemList.appendChild(mergeDateItem)
+    const secondaryItemList = document.createElement('ul')
+    secondaryDiv.appendChild(secondaryItemList)
 
-  const actionsDiv = document.createElement('div')
-  actionsDiv.className = 'mdc-card__actions'
-  cardDiv.appendChild(actionsDiv)
+    const creationDateItem = document.createElement('li')
+    creationDateItem.textContent = `Created: ${this.pullRequest.creationDate}`
+    secondaryItemList.appendChild(creationDateItem)
 
-  const githubButton = document.createElement('button')
-  githubButton.className =
-    'mdc-button mdc-card__action mdc-card__action--button'
-  actionsDiv.appendChild(githubButton)
+    const mergeDateItem = document.createElement('li')
+    mergeDateItem.textContent = `Merged: ${this.pullRequest.mergeDate}`
+    secondaryItemList.appendChild(mergeDateItem)
 
-  const githubButtonRipple = document.createElement('div')
-  githubButtonRipple.className = 'mdc-button__ripple'
-  githubButton.appendChild(githubButtonRipple)
+    return secondaryDiv
+  }
 
-  const githubButtonIcon = document.createElement('i')
-  githubButtonIcon.className = 'material-icons'
-  githubButtonIcon.textContent = 'open_in_browser'
-  githubButton.appendChild(githubButtonIcon)
+  private createActionButton(
+    iconName: string,
+    label: string
+  ): HTMLButtonElement {
+    const button = document.createElement('button')
+    button.className = 'mdc-button mdc-card__action mdc-card__action--button'
 
-  const githubButtonLabel = document.createElement('span')
-  githubButtonLabel.className = 'mdc-button__label'
-  githubButtonLabel.textContent = 'GitHub'
-  githubButton.appendChild(githubButtonLabel)
+    const buttonRipple = document.createElement('div')
+    buttonRipple.className = 'mdc-button__ripple'
+    button.appendChild(buttonRipple)
 
-  return cardDiv
+    const buttonIcon = document.createElement('i')
+    buttonIcon.className = 'material-icons'
+    buttonIcon.textContent = iconName
+    button.appendChild(buttonIcon)
+
+    const buttonLabel = document.createElement('span')
+    buttonLabel.className = 'mdc-button__label'
+    buttonLabel.textContent = label
+    button.appendChild(buttonLabel)
+
+    return button
+  }
+
+  private createActions(): HTMLDivElement {
+    const actionsDiv = document.createElement('div')
+    actionsDiv.className = 'mdc-card__actions'
+    actionsDiv.appendChild(this.createActionButton('open_in_browser', 'GitHub'))
+    return actionsDiv
+  }
+
+  getCard(): HTMLDivElement {
+    const cardDiv = document.createElement('div')
+    cardDiv.className = 'mdc-card pullRequestCard'
+    cardDiv.appendChild(this.createPrimary())
+    cardDiv.appendChild(this.createSecondary())
+    cardDiv.appendChild(this.createActions())
+    return cardDiv
+  }
 }

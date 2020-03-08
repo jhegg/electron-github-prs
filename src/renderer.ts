@@ -6,7 +6,7 @@ import { MDCRipple } from '@material/ripple'
 import { MDCSelect } from '@material/select'
 import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
-import { createPullRequestCard } from './pull-request-card'
+import { PullRequestCard } from './pull-request-card'
 
 new MDCRipple(document.querySelector('.mdc-button'))
 new MDCTextField(document.querySelector('.mdc-text-field'))
@@ -67,8 +67,8 @@ const getPullRequests = async (): Promise<void> => {
   document.getElementById('numberOfPulls').textContent = `${pulls.length}`
   const pullsDiv = document.getElementById('pulls')
   pulls.forEach(pullRequest => {
-    const cardDiv = createPullRequestCard(pullRequest)
-    pullsDiv.appendChild(cardDiv)
+    const cardDiv = new PullRequestCard(pullRequest)
+    pullsDiv.appendChild(cardDiv.getCard())
   })
 }
 
