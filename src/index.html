@@ -2,43 +2,87 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>GitHub PR Analysis</title>
+    <title>GitHub Pull Request Analysis</title>
   </head>
-  <body>
-    <h1>GitHub PR Analysis</h1>
-    <div class="inputContainer">
-      <div>
+  <body class="mdc-typography">
+    <h3 class="mdc-typography--headline3">GitHub Pull Request Analysis</h3>
+    <div>
+      <div class="instructionText">
         Input your github.com personal access token:
       </div>
       <div>
-        <input id="accessTokenInput" type="text" />
-        <button id="saveAccessTokenButton" type="button">
-          Save Access Token
+        <label class="mdc-text-field">
+          <div class="mdc-text-field__ripple"></div>
+          <input
+            class="mdc-text-field__input"
+            type="text"
+            aria-labelledby="my-label-id"
+            id="accessTokenInput"
+            required
+            minlength="1"
+            size="45"
+          />
+          <span class="mdc-floating-label" id="my-label-id">
+            Personal access token
+          </span>
+          <div class="mdc-line-ripple"></div>
+        </label>
+        <button
+          id="saveAccessTokenButton"
+          class="mdc-button mdc-button--raised"
+        >
+          <div class="mdc-button__ripple"></div>
+          <span class="mdc-button__label">Authenticate</span>
         </button>
       </div>
-      <div id="authenticatedUser" class="resultsText"></div>
-      <div id="accessTokenInputError" class="errorText"></div>
+      <div id="authenticatedUser" class="mdc-theme--primary"></div>
+      <div id="accessTokenInputError" class="mdc-theme--error"></div>
     </div>
     <hr />
-    <div class="inputContainer">
-      <label for="repo-select">Choose a repository:</label>
-      <select name="repositories" id="repo-select" disabled>
-        <option value="">--Please choose a repository--</option>
-      </select>
-      <input id="selected-repo" type="hidden" />
+    <div>
+      <div class="repoSelectContainer">
+        <div class="mdc-select">
+          <div class="mdc-select__anchor repo-select-width">
+            <i class="mdc-select__dropdown-icon"></i>
+            <div class="mdc-select__selected-text"></div>
+            <span class="mdc-floating-label">Choose a Repository</span>
+            <div class="mdc-line-ripple"></div>
+          </div>
+
+          <div
+            class="mdc-select__menu mdc-menu mdc-menu-surface repo-select-width"
+          >
+            <ul class="mdc-list" id="repo-item-list">
+              <li
+                class="mdc-list-item mdc-list-item--selected"
+                data-value=""
+                aria-selected="true"
+              ></li>
+            </ul>
+          </div>
+          <input id="selected-repo" type="hidden" />
+        </div>
+      </div>
+      <button
+        id="collectPullRequestsButton"
+        class="mdc-button mdc-button--raised"
+        disabled
+      >
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">Collect PR Data</span>
+      </button>
     </div>
-    <button id="collectPullRequestsButton" type="button" disabled>
-      Collect Pull Request Data
-    </button>
     <hr />
-    <div class="resultsContainer">
-      <p>
-        Number of Pull Requests:
-        <span id="numberOfPulls" class="resultsText"></span>
-      </p>
-      <div>
-        Pull Requests:
-        <div id="pulls" class="resultsContainer resultsText"></div>
+    <div>
+      <div class="resultsContainer">
+        <p>
+          Number of Pull Requests:
+          <span id="numberOfPulls" class="mdc-theme--primary"></span>
+        </p>
+        <div>
+          Pull Requests:
+          <div id="pulls" class="resultsContainer mdc-theme--primary"></div>
+        </div>
       </div>
     </div>
   </body>

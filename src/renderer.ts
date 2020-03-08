@@ -1,20 +1,32 @@
 import './index.css'
+import '../node_modules/material-components-web/dist/material-components-web.css'
+import 'material-design-icons/iconfont/material-icons.css'
+import 'typeface-roboto'
+import { MDCRipple } from '@material/ripple'
+import { MDCSelect } from '@material/select'
+import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
+
+new MDCRipple(document.querySelector('.mdc-button'))
+new MDCTextField(document.querySelector('.mdc-text-field'))
+const repoSelector = new MDCSelect(document.querySelector('.mdc-select'))
+repoSelector.disabled = true
 
 const githubOrgName = 'jhegg'
 const github: GitHub = new GitHub()
 
 const getReposForUser = async (): Promise<void> => {
-  const reposSelectElement = document.getElementById('repo-select')
   try {
     const repoNames = await github.getRepoNamesFor(githubOrgName)
     repoNames.forEach((repoName: string) => {
-      const option = document.createElement('option')
-      option.textContent = repoName
-      reposSelectElement.appendChild(option)
+      const repoItem = document.createElement('li')
+      repoItem.className = 'mdc-list-item'
+      repoItem.setAttribute('data-value', repoName)
+      repoItem.setAttribute('role', 'option')
+      repoItem.textContent = repoName
+      document.getElementById('repo-item-list').appendChild(repoItem)
     })
-    reposSelectElement.removeAttribute('disabled')
-    reposSelectElement.focus()
+    repoSelector.disabled = false
   } catch (error) {
     document.getElementById(
       'accessTokenInputError'
@@ -30,10 +42,11 @@ function clearPullRequestData(): void {
   }
 }
 
-document.getElementById('repo-select').onchange = (event): void => {
-  const selectedValue = (event.target as HTMLInputElement).value
-  document.getElementById('selected-repo').setAttribute('value', selectedValue)
-  if (selectedValue && selectedValue.length > 0) {
+repoSelector.listen('MDCSelect:change', () => {
+  document
+    .getElementById('selected-repo')
+    .setAttribute('value', repoSelector.value)
+  if (repoSelector.value && repoSelector.value.length > 0) {
     document
       .getElementById('collectPullRequestsButton')
       .removeAttribute('disabled')
@@ -43,7 +56,7 @@ document.getElementById('repo-select').onchange = (event): void => {
       .setAttribute('disabled', '')
   }
   clearPullRequestData()
-}
+})
 
 const getPullRequests = async (): Promise<void> => {
   const repo = document
@@ -61,45 +74,60 @@ const getPullRequests = async (): Promise<void> => {
 
 document.getElementById('collectPullRequestsButton').onclick = getPullRequests
 
-function clearRepoData(): void {
-  const reposSelectElement = document.getElementById('repo-select')
-  reposSelectElement.setAttribute('disabled', '')
-  while (reposSelectElement.firstChild) {
-    reposSelectElement.removeChild(reposSelectElement.firstChild)
+function clearRepoSelector(): void {
+  repoSelector.selectedIndex = -1
+  const repoItemList = document.getElementById('repo-item-list')
+  while (repoItemList.firstChild) {
+    repoItemList.removeChild(repoItemList.firstChild)
   }
-  const defaultRepoSelectElement = document.createElement('option')
-  defaultRepoSelectElement.textContent = '--Please choose a repository--'
-  defaultRepoSelectElement.value = ''
-  reposSelectElement.appendChild(defaultRepoSelectElement)
+  const repoItem = document.createElement('li')
+  repoItem.className = 'mdc-list-item'
+  repoItem.setAttribute('data-value', '')
+  repoItem.setAttribute('aria-selected', 'true')
+  repoItemList.appendChild(repoItem)
+  repoSelector.disabled = true
+}
+
+function clearRepoData(): void {
+  clearRepoSelector()
   document
     .getElementById('collectPullRequestsButton')
     .setAttribute('disabled', '')
+}
+
+function setAccessTokenInputErrorMessage(errorMessage: string): void {
+  const accessTokenInputErrorElement = document.getElementById(
+    'accessTokenInputError'
+  )
+  accessTokenInputErrorElement.textContent = errorMessage
+}
+
+function clearAllData(errorMessage: string): void {
+  setAccessTokenInputErrorMessage(errorMessage)
+  const authenticatedUserElement = document.getElementById('authenticatedUser')
+  authenticatedUserElement.textContent = ''
+  clearPullRequestData()
+  clearRepoData()
 }
 
 const saveAccessToken = async (): Promise<void> => {
   const accessToken = (document.getElementById(
     'accessTokenInput'
   ) as HTMLInputElement).value.trim()
-  const accessTokenInputErrorElement = document.getElementById(
-    'accessTokenInputError'
-  )
   const authenticatedUserElement = document.getElementById('authenticatedUser')
 
   if (accessToken && accessToken.length > 0) {
-    accessTokenInputErrorElement.textContent = ''
+    setAccessTokenInputErrorMessage('')
     github.setAuthToken(accessToken)
     try {
       const authenticatedUser = await github.testAuthentication()
       authenticatedUserElement.textContent = `Authenticated as: ${authenticatedUser}`
       getReposForUser()
     } catch (error) {
-      accessTokenInputErrorElement.textContent = `Error: ${error}`
-      authenticatedUserElement.textContent = ''
-      clearPullRequestData()
-      clearRepoData()
+      clearAllData(`Error: ${error}`)
     }
   } else {
-    accessTokenInputErrorElement.textContent = 'Error: access token was not set'
+    clearAllData('Error: access token was not set')
   }
 }
 

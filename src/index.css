@@ -1,29 +1,45 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  margin: auto;
-  max-width: 38rem;
-  padding: 2rem;
-  background-color: #222831; /* https://colorhunt.co/palette/2763 */
-  color: #eeeeee;
+  background-color: gainsboro;
 }
 
 hr {
   border: 1px solid #393e46;
 }
 
-.inputContainer {
-  margin-bottom: 20px;
+.instructionText {
+  margin-bottom: 10px;
 }
 
-.errorText {
-  color: #ffb000;
+.inputContainer {
+  margin-bottom: 20px;
 }
 
 .resultsContainer {
   padding-left: 10px;
 }
 
-.resultsText {
-  color: #00adb5;
+#saveAccessTokenButton {
+  vertical-align: top;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  margin-left: 5px;
+}
+
+#authenticatedUser {
+  padding-top: 10px;
+}
+
+.repoSelectContainer {
+  display: inline-block;
+  width: 414px;
+}
+
+.repo-select-width {
+  width: 414px;
+}
+
+#collectPullRequestsButton {
+  vertical-align: top;
+  margin-left: 6px;
+  margin-top: 10px;
 }

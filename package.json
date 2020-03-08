@@ -72,7 +72,10 @@
     "css-loader": "^3.4.2",
     "electron": "8.0.2",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "file-loader": "^5.1.0",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
@@ -85,8 +88,9 @@
   "dependencies": {
     "@octokit/rest": "^17.0.0",
     "electron-squirrel-startup": "^1.0.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-prettier": "^3.1.2"
+    "material-components-web": "^5.1.0",
+    "material-design-icons": "^3.0.1",
+    "typeface-roboto": "0.0.75"
   },
   "husky": {
     "hooks": {
