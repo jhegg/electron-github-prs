@@ -48,6 +48,7 @@ hr {
   display: flex;
   flex: 400px;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .pullRequestCard {
