@@ -19,6 +19,7 @@ hr {
 }
 
 #saveAccessTokenButton {
+  vertical-align: top;
   margin-top: 10px;
   margin-bottom: 15px;
   margin-left: 5px;
@@ -28,6 +29,17 @@ hr {
   padding-top: 10px;
 }
 
-.demo-width-class {
+.repoSelectContainer {
+  display: inline-block;
   width: 414px;
+}
+
+.repo-select-width {
+  width: 414px;
+}
+
+#collectPullRequestsButton {
+  vertical-align: top;
+  margin-left: 6px;
+  margin-top: 10px;
 }
