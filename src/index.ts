@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 declare const MAIN_WINDOW_WEBPACK_ENTRY: never
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: never
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -13,7 +14,9 @@ const createWindow = (): void => {
     height: 1024,
     width: 1024,
     webPreferences: {
-      //nodeIntegration: true
+      //nodeIntegration: true,
+      contextIsolation: true,
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
   })
 

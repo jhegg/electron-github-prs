@@ -6,19 +6,41 @@ export class PullRequest {
   title: string
   creationDate: string
   mergeDate: string
+  htmlUrl: string
 
   constructor(
     number: number,
     author: string,
     title: string,
     creationDate: string,
-    mergeDate: string
+    mergeDate: string,
+    htmlUrl: string
   ) {
     this.number = number
     this.author = author
     this.title = title
     this.creationDate = creationDate
     this.mergeDate = mergeDate
+
+    this.htmlUrl = this.validateUrl(htmlUrl)
+  }
+
+  private validateUrl(htmlUrl: string): string {
+    try {
+      const url = new URL(htmlUrl)
+      if (url.protocol !== 'https:') {
+        console.log(
+          `Error while parsing URL "${htmlUrl}" for PR from GitHub: protocol was not "https:"`
+        )
+        return ''
+      }
+      return htmlUrl
+    } catch (error) {
+      console.log(
+        `Error while parsing URL "${htmlUrl}" for PR from GitHub: ${error}`
+      )
+      return ''
+    }
   }
 }
 
@@ -54,7 +76,8 @@ export class GitHub {
           pull.user.login,
           pull.title,
           pull.created_at,
-          pull.merged_at
+          pull.merged_at,
+          pull.html_url
         )
     )
     return pullRequests

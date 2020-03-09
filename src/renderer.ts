@@ -8,6 +8,14 @@ import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
 import { PullRequestCard } from './pull-request-card'
 
+declare global {
+  interface Window {
+    electron: {
+      openExternal(url: string): void
+    }
+  }
+}
+
 new MDCRipple(document.querySelector('.mdc-button'))
 new MDCTextField(document.querySelector('.mdc-text-field'))
 const repoSelector = new MDCSelect(document.querySelector('.mdc-select'))

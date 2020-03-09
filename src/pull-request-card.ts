@@ -45,7 +45,7 @@ export class PullRequestCard {
     return secondaryDiv
   }
 
-  private createActionButton(
+  private createGithubButton(
     iconName: string,
     label: string
   ): HTMLButtonElement {
@@ -69,10 +69,16 @@ export class PullRequestCard {
     return button
   }
 
+  clickGithubButton = async (): Promise<void> => {
+    window.electron.openExternal(this.pullRequest.htmlUrl)
+  }
+
   private createActions(): HTMLDivElement {
     const actionsDiv = document.createElement('div')
     actionsDiv.className = 'mdc-card__actions'
-    actionsDiv.appendChild(this.createActionButton('open_in_browser', 'GitHub'))
+    const githubButton = this.createGithubButton('open_in_browser', 'GitHub')
+    githubButton.onclick = this.clickGithubButton
+    actionsDiv.appendChild(githubButton)
     return actionsDiv
   }
 
