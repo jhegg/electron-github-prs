@@ -122,6 +122,23 @@ export class GitHub {
   async testAuthentication(): Promise<string> {
     const authenticatedUser = await this.octokit.users.getAuthenticated()
     console.log(`Authenticated user: ${authenticatedUser.data.login}`)
+    const minutesUntilReset = Math.round(
+      (new Date(
+        Number(authenticatedUser.headers['x-ratelimit-reset']) * 1000
+      ).valueOf() -
+        new Date().valueOf()) /
+        1000 /
+        60
+    )
+    console.log(
+      `Rate limiting:
+        limit=${authenticatedUser.headers['x-ratelimit-limit']},
+        remaining=${authenticatedUser.headers['x-ratelimit-remaining']},
+        reset=${new Date(
+          Number(authenticatedUser.headers['x-ratelimit-reset']) * 1000
+        )},
+        minutesUntilReset=${minutesUntilReset}`
+    )
     return authenticatedUser.data.login
   }
 }
