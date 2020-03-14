@@ -12,6 +12,9 @@ declare global {
   interface Window {
     electron: {
       openExternal(url: string): void
+      deleteAccessTokenFromKeychain(): void
+      getAccessTokenFromKeychain(): string
+      setAccessTokenInKeychain(token: string): void
     }
   }
 }
@@ -119,25 +122,44 @@ function clearAllData(errorMessage: string): void {
   clearRepoData()
 }
 
+async function useAccessToken(accessToken: string): Promise<void> {
+  setAccessTokenInputErrorMessage('')
+  github.setAuthToken(accessToken)
+  try {
+    const authenticatedUser = await github.testAuthentication()
+    const authenticatedUserElement = document.getElementById(
+      'authenticatedUser'
+    )
+    authenticatedUserElement.textContent = `Authenticated as: ${authenticatedUser}`
+    await window.electron.setAccessTokenInKeychain(accessToken)
+    getReposForUser()
+  } catch (error) {
+    clearAllData(`Error: ${error}`)
+  }
+}
+
 const saveAccessToken = async (): Promise<void> => {
   const accessToken = (document.getElementById(
     'accessTokenInput'
   ) as HTMLInputElement).value.trim()
-  const authenticatedUserElement = document.getElementById('authenticatedUser')
 
   if (accessToken && accessToken.length > 0) {
-    setAccessTokenInputErrorMessage('')
-    github.setAuthToken(accessToken)
-    try {
-      const authenticatedUser = await github.testAuthentication()
-      authenticatedUserElement.textContent = `Authenticated as: ${authenticatedUser}`
-      getReposForUser()
-    } catch (error) {
-      clearAllData(`Error: ${error}`)
-    }
+    await useAccessToken(accessToken)
   } else {
     clearAllData('Error: access token was not set')
   }
 }
 
 document.getElementById('saveAccessTokenButton').onclick = saveAccessToken
+
+async function loadAccessToken(): Promise<void> {
+  const accessToken = await window.electron.getAccessTokenFromKeychain()
+  if (accessToken) {
+    new MDCTextField(
+      document.getElementById('mdcAccessTokenInput')
+    ).value = accessToken
+    useAccessToken(accessToken)
+  }
+}
+
+loadAccessToken()
