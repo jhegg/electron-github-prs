@@ -42,6 +42,16 @@ export class PullRequestCard {
     mergeDateItem.textContent = `Merged: ${this.pullRequest.mergeDate}`
     secondaryItemList.appendChild(mergeDateItem)
 
+    const mergeCommitItem = document.createElement('li')
+    mergeCommitItem.textContent = `Merge Commit: `
+    secondaryItemList.appendChild(mergeCommitItem)
+
+    const mergeCommitTitle = document.createElement('span')
+    mergeCommitTitle.setAttribute('title', this.pullRequest.mergeCommit)
+    const abbreviatedCommit = this.pullRequest.mergeCommit.substr(0, 6)
+    mergeCommitTitle.textContent = abbreviatedCommit
+    mergeCommitItem.appendChild(mergeCommitTitle)
+
     return secondaryDiv
   }
 

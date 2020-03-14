@@ -5,6 +5,7 @@ export class PullRequest {
   author: string
   title: string
   creationDate: string
+  mergeCommit: string
   mergeDate: string
   htmlUrl: string
 
@@ -13,6 +14,7 @@ export class PullRequest {
     author: string,
     title: string,
     creationDate: string,
+    mergeCommit: string,
     mergeDate: string,
     htmlUrl: string
   ) {
@@ -20,6 +22,7 @@ export class PullRequest {
     this.author = author
     this.title = title
     this.creationDate = creationDate
+    this.mergeCommit = mergeCommit
     this.mergeDate = mergeDate
 
     this.htmlUrl = this.validateUrl(htmlUrl)
@@ -55,12 +58,13 @@ interface Pull {
   }
   title: string
   created_at: string
+  merge_commit_sha: string
   merged_at: string
   html_url: string
 }
 
 export class GitHub {
-  octokit = new Octokit()
+  private octokit = new Octokit()
 
   async getRepoNamesFor(user: string): Promise<Array<string>> {
     const repoNames = (await this.octokit.paginate(
@@ -98,6 +102,7 @@ export class GitHub {
               pull.user.login,
               pull.title,
               pull.created_at,
+              pull.merge_commit_sha,
               pull.merged_at,
               pull.html_url
             )
