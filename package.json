@@ -90,6 +90,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^17.0.0",
+    "electron-create-menu": "^3.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "keytar": "^5.4.0",
     "material-components-web": "^5.1.0",

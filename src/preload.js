@@ -1,8 +1,6 @@
 import { contextBridge, shell } from 'electron'
 import { getPassword, setPassword, deletePassword } from 'keytar'
-
-const keytarServiceName = 'electron-github-prs'
-const keytarAccountName = 'main'
+import { keytarServiceName, keytarAccountName } from './keytar-constants'
 
 contextBridge.exposeInMainWorld('electron', {
   openExternal: url => shell.openExternal(url),
