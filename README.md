@@ -4,6 +4,12 @@ A simple Electron example app leveraging TypeScript and Webpack (courtesy of [El
 
 Makes authenticated GitHub API queries to get the repository list for `jhegg`, and then when a specific repo is selected the pull requests are summarized.
 
+## Prerequisites
+
+### Linux
+
+This app uses [`keytar`](https://atom.github.io/node-keytar/) to store the GitHub access token in the OS keychain. On Linux, you may need to install `libsecret` per the `keytar` documentation.
+
 ## How to use
 
 - `npm install`
