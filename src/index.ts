@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import Menu from 'electron-create-menu'
 import { deletePassword } from 'keytar'
 import { keytarServiceName, keytarAccountName } from './keytar-constants'
+import { IpcHandlers } from './ipc-handlers'
 declare const MAIN_WINDOW_WEBPACK_ENTRY: never
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: never
 
@@ -17,7 +18,6 @@ const createWindow = (): void => {
     height: 1024,
     width: 1024,
     webPreferences: {
-      //nodeIntegration: true,
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
@@ -76,5 +76,4 @@ app.on('activate', () => {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+new IpcHandlers().register()
