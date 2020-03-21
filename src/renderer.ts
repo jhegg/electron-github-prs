@@ -13,6 +13,8 @@ declare global {
     electron: {
       openExternal(url: string): void
       deleteAccessTokenFromKeychain(): void
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ipcRendererInvoke(channel: string, ...args: any): any
       getAccessTokenFromKeychain(): string
       setAccessTokenInKeychain(token: string): void
     }
@@ -124,7 +126,7 @@ function clearAllData(errorMessage: string): void {
 
 async function useAccessToken(accessToken: string): Promise<void> {
   setAccessTokenInputErrorMessage('')
-  github.setAuthToken(accessToken)
+  await github.setAuthToken(accessToken)
   try {
     const authenticatedUser = await github.testAuthentication()
     const authenticatedUserElement = document.getElementById(
@@ -134,7 +136,7 @@ async function useAccessToken(accessToken: string): Promise<void> {
     await window.electron.setAccessTokenInKeychain(accessToken)
     getReposForUser()
   } catch (error) {
-    clearAllData(`Error: ${error}`)
+    clearAllData(error)
   }
 }
 
@@ -163,3 +165,19 @@ async function loadAccessToken(): Promise<void> {
 }
 
 loadAccessToken()
+
+// // Example of IPC invoke on main process
+// async function getStuff(): Promise<void> {
+//   const response = (await window.electron.ipcRendererInvoke(
+//     'query-github',
+//     'github'
+//   )) as IpcResponse
+//   if (response.error) {
+//     console.log(`got error: status=${response.status}`)
+//   } else {
+//     console.log('got response from ipcMain...')
+//     console.log(response)
+//   }
+// }
+
+// getStuff()

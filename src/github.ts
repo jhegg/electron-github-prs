@@ -1,4 +1,10 @@
-import { Octokit } from '@octokit/rest'
+import {
+  GithubResponse,
+  GitHubGetReposForUserChannel,
+  GitHubSaveTokenChannel,
+  GitHubTestAuthenticationChannel,
+  GitHubGetPullsForRepoChannel
+} from './ipc-response'
 
 export class PullRequest {
   number: number
@@ -47,37 +53,16 @@ export class PullRequest {
   }
 }
 
-interface Repo {
-  name: string
-}
-
-interface Pull {
-  number: number
-  user: {
-    login: string
-  }
-  title: string
-  created_at: string
-  merge_commit_sha: string
-  merged_at: string
-  html_url: string
-}
-
 export class GitHub {
-  private octokit = new Octokit()
-
   async getRepoNamesFor(user: string): Promise<Array<string>> {
-    const repoNames = (await this.octokit.paginate(
-      'GET /users/:owner/repos',
-      {
-        owner: user,
-        type: 'all',
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        per_page: 100
-      },
-      response => (response.data as Array<Repo>).map(repo => repo.name)
-    )) as Array<string>
-    return repoNames.sort()
+    const response = (await window.electron.ipcRendererInvoke(
+      GitHubGetReposForUserChannel,
+      user
+    )) as GithubResponse
+    if (response.error) {
+      throw Error(`${response.status} ${response.data}`)
+    }
+    return response.data
   }
 
   async getPullRequestsFor(
@@ -85,46 +70,36 @@ export class GitHub {
     repoName: string
   ): Promise<Array<PullRequest>> {
     console.log(`Going to get pull requests for repo: ${repoName}`)
-    const pulls = (await this.octokit.paginate(
-      'GET /repos/:owner/:repo/pulls',
-      {
-        owner: user,
-        repo: repoName,
-        state: 'all',
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        per_page: 100
-      },
-      response =>
-        (response.data as Array<Pull>).map(
-          pull =>
-            new PullRequest(
-              pull.number,
-              pull.user.login,
-              pull.title,
-              pull.created_at,
-              pull.merge_commit_sha,
-              pull.merged_at,
-              pull.html_url
-            )
-        )
-    )) as Array<PullRequest>
+    const response = await window.electron.ipcRendererInvoke(
+      GitHubGetPullsForRepoChannel,
+      user,
+      repoName
+    )
+    if (response.error) {
+      throw Error(`${response.status} ${response.data}`)
+    }
+    const pulls = response.data
     console.log(`Found ${pulls.length} pull requests`)
     return pulls
   }
 
-  setAuthToken(accessToken: string): void {
-    this.octokit = new Octokit({
-      auth: accessToken,
-      userAgent: 'jhegg/electron-github-prs 1.0.0'
-    })
+  async setAuthToken(accessToken: string): Promise<void> {
+    await window.electron.ipcRendererInvoke(GitHubSaveTokenChannel, accessToken)
   }
 
   async testAuthentication(): Promise<string> {
-    const authenticatedUser = await this.octokit.users.getAuthenticated()
-    console.log(`Authenticated user: ${authenticatedUser.data.login}`)
+    const authenticatedUserResponse = (await window.electron.ipcRendererInvoke(
+      GitHubTestAuthenticationChannel
+    )) as GithubResponse
+    if (authenticatedUserResponse.error) {
+      throw Error(
+        `${authenticatedUserResponse.status} ${authenticatedUserResponse.data}`
+      )
+    }
+    console.log(`Authenticated user: ${authenticatedUserResponse.data.login}`)
     const minutesUntilReset = Math.round(
       (new Date(
-        Number(authenticatedUser.headers['x-ratelimit-reset']) * 1000
+        Number(authenticatedUserResponse.headers['x-ratelimit-reset']) * 1000
       ).valueOf() -
         new Date().valueOf()) /
         1000 /
@@ -132,13 +107,13 @@ export class GitHub {
     )
     console.log(
       `Rate limiting:
-        limit=${authenticatedUser.headers['x-ratelimit-limit']},
-        remaining=${authenticatedUser.headers['x-ratelimit-remaining']},
+        limit=${authenticatedUserResponse.headers['x-ratelimit-limit']},
+        remaining=${authenticatedUserResponse.headers['x-ratelimit-remaining']},
         reset=${new Date(
-          Number(authenticatedUser.headers['x-ratelimit-reset']) * 1000
+          Number(authenticatedUserResponse.headers['x-ratelimit-reset']) * 1000
         )},
         minutesUntilReset=${minutesUntilReset}`
     )
-    return authenticatedUser.data.login
+    return authenticatedUserResponse.data.login
   }
 }
