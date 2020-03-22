@@ -1,4 +1,5 @@
 import { PullRequest } from './github'
+import { ElectronOpenExternalUrlChannel } from './ipc-response'
 
 export class PullRequestCard {
   pullRequest: PullRequest
@@ -80,7 +81,10 @@ export class PullRequestCard {
   }
 
   clickGithubButton = async (): Promise<void> => {
-    window.electron.openExternal(this.pullRequest.htmlUrl)
+    window.electron.ipcRendererInvoke(
+      ElectronOpenExternalUrlChannel,
+      this.pullRequest.htmlUrl
+    )
   }
 
   private createActions(): HTMLDivElement {

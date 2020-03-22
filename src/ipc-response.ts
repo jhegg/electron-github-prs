@@ -4,6 +4,7 @@ export const GitHubGetPullsForRepoChannel = 'github-get-pulls-for-repo'
 export const GitHubGetReposForUserChannel = 'github-get-repos-for-user'
 export const GitHubSaveTokenChannel = 'save-github-token'
 export const GitHubTestAuthenticationChannel = 'test-github-auth'
+export const ElectronOpenExternalUrlChannel = 'open-external-url'
 
 export class IpcResponse {
   error: boolean

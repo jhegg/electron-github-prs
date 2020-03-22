@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, shell } from 'electron'
 import axios from 'axios'
 import {
   IpcResponse,
@@ -8,7 +8,8 @@ import {
   GitHubSaveTokenChannel,
   GitHubTestAuthenticationChannel,
   GitHubGetPullsForRepoChannel,
-  Pull
+  Pull,
+  ElectronOpenExternalUrlChannel
 } from './ipc-response'
 import { Octokit } from '@octokit/rest'
 import { PullRequest } from './github'
@@ -118,8 +119,15 @@ class GitHubIpcHandlers {
 
 export class IpcHandlers {
   register(): void {
+    this.registerOpenExternalUrlHandler()
     this.registerQueryGithubHandler()
     new GitHubIpcHandlers().register()
+  }
+
+  private registerOpenExternalUrlHandler(): void {
+    ipcMain.handle(ElectronOpenExternalUrlChannel, async (_event, url) => {
+      await shell.openExternal(url)
+    })
   }
 
   private registerQueryGithubHandler(): void {
