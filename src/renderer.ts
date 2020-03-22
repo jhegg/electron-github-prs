@@ -11,7 +11,6 @@ import { PullRequestCard } from './pull-request-card'
 declare global {
   interface Window {
     electron: {
-      deleteAccessTokenFromKeychain(): void
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ipcRendererInvoke(channel: string, ...args: any): any
       getAccessTokenFromKeychain(): string
