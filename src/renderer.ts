@@ -7,13 +7,14 @@ import { MDCSelect } from '@material/select'
 import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
 import { PullRequestCard } from './pull-request-card'
+import { KeytarGetAccessTokenChannel } from './ipc-response'
+import { keytarAccountName } from './keytar-constants'
 
 declare global {
   interface Window {
     electron: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ipcRendererInvoke(channel: string, ...args: any): any
-      getAccessTokenFromKeychain(): string
       setAccessTokenInKeychain(token: string): void
     }
   }
@@ -153,7 +154,10 @@ const saveAccessToken = async (): Promise<void> => {
 document.getElementById('saveAccessTokenButton').onclick = saveAccessToken
 
 async function loadAccessToken(): Promise<void> {
-  const accessToken = await window.electron.getAccessTokenFromKeychain()
+  const accessToken = await window.electron.ipcRendererInvoke(
+    KeytarGetAccessTokenChannel,
+    keytarAccountName
+  )
   if (accessToken) {
     new MDCTextField(
       document.getElementById('mdcAccessTokenInput')

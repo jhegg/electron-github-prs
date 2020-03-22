@@ -9,10 +9,13 @@ import {
   GitHubTestAuthenticationChannel,
   GitHubGetPullsForRepoChannel,
   Pull,
-  ElectronOpenExternalUrlChannel
+  ElectronOpenExternalUrlChannel,
+  KeytarGetAccessTokenChannel
 } from './ipc-response'
 import { Octokit } from '@octokit/rest'
 import { PullRequest } from './github'
+import { getPassword } from 'keytar'
+import { keytarServiceName } from './keytar-constants'
 
 class GitHubIpcHandlers {
   private octokit = new Octokit()
@@ -119,9 +122,16 @@ class GitHubIpcHandlers {
 
 export class IpcHandlers {
   register(): void {
+    this.registerGetAccessTokenFromKeychainHandler()
     this.registerOpenExternalUrlHandler()
     this.registerQueryGithubHandler()
     new GitHubIpcHandlers().register()
+  }
+
+  private registerGetAccessTokenFromKeychainHandler(): void {
+    ipcMain.handle(KeytarGetAccessTokenChannel, async (_event, accountName) => {
+      return await getPassword(keytarServiceName, accountName)
+    })
   }
 
   private registerOpenExternalUrlHandler(): void {

@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-undef */
 import { contextBridge, ipcRenderer } from 'electron'
-import { getPassword, setPassword } from 'keytar'
+import { setPassword } from 'keytar'
 import { keytarServiceName, keytarAccountName } from './keytar-constants'
 
 contextBridge.exposeInMainWorld('electron', {
-  getAccessTokenFromKeychain: () =>
-    getPassword(keytarServiceName, keytarAccountName),
   setAccessTokenInKeychain: token =>
     setPassword(keytarServiceName, keytarAccountName, token),
   ipcRendererInvoke: (channel, ...args) => {
