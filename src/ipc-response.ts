@@ -1,6 +1,7 @@
 import { ResponseHeaders } from '@octokit/types'
 
 export const KeytarGetAccessTokenChannel = 'get-access-token'
+export const KeytarSetAccessTokenChannel = 'set-access-token'
 export const GitHubGetPullsForRepoChannel = 'github-get-pulls-for-repo'
 export const GitHubGetReposForUserChannel = 'github-get-repos-for-user'
 export const GitHubSaveTokenChannel = 'save-github-token'

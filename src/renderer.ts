@@ -7,7 +7,10 @@ import { MDCSelect } from '@material/select'
 import { MDCTextField } from '@material/textfield'
 import { GitHub } from './github'
 import { PullRequestCard } from './pull-request-card'
-import { KeytarGetAccessTokenChannel } from './ipc-response'
+import {
+  KeytarGetAccessTokenChannel,
+  KeytarSetAccessTokenChannel
+} from './ipc-response'
 import { keytarAccountName } from './keytar-constants'
 
 declare global {
@@ -15,7 +18,6 @@ declare global {
     electron: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ipcRendererInvoke(channel: string, ...args: any): any
-      setAccessTokenInKeychain(token: string): void
     }
   }
 }
@@ -132,7 +134,11 @@ async function useAccessToken(accessToken: string): Promise<void> {
       'authenticatedUser'
     )
     authenticatedUserElement.textContent = `Authenticated as: ${authenticatedUser}`
-    await window.electron.setAccessTokenInKeychain(accessToken)
+    await window.electron.ipcRendererInvoke(
+      KeytarSetAccessTokenChannel,
+      keytarAccountName,
+      accessToken
+    )
     getReposForUser()
   } catch (error) {
     clearAllData(error)
